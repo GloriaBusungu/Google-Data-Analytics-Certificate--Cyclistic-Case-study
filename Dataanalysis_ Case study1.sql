@@ -61,3 +61,44 @@ SELECT COUNT(RIDE_ID), MONTH,YEAR,member_casual FROM  ZANALYSISR GROUP BY MONTH,
 /
 SELECT COUNT(RIDE_ID),RIDEABLE_TYPE ,member_casual,MONTH,YEAR FROM  ZANALYSISR GROUP BY RIDEABLE_TYPE,member_casual,MONTH,YEAR ORDER BY RIDEABLE_TYPE,member_casual,MONTH,YEAR
 /
+--Calculate the mean of ride_length for all
+	SELECT AVG(CAST(ENDED_AT AS DATE)-CAST(STARTED_AT AS DATE))*24*60*60 FROM ZANALYSISR;
+-- 1138.747891007836353235511017071809112041
+--Convert it to hours minutes (17:56:58)
+--Calculate the median of ride_length for all
+	SELECT MEDIAN(RIDE_LENGTH) AS MEDIAN_RIDE_LENGTH FROM ZANALYSISR;
+--00:10:02
+--Calculate the max ride_length for all
+ 	SELECT MAX(RIDE_LENGTH) AS MAX_RIDE_LENGTH FROM ZANALYSISR;
+--+28 17:47:15.000000
+--Calculate the mode of day_of_week for all
+	SELECT STATS_MODE(DAY_OF_WEEK) AS DAY_OF_THE_WEEK FROM ZANALYSISR;
+--SATURDAY
+
+ --Calculate the average ride_length for members and casual riders. Try rows = member_casual; Values = Average of ride_length.
+	
+SELECT member_casual, AVG(CAST(ENDED_AT AS DATE)-CAST(STARTED_AT AS DATE))*24*60*60 FROM ZANALYSISR group by member_casual;
+Calculate the average ride_length for users by day_of_week. Try columns = day_of_week; Rows = member_casual; Values = Average of ride_length.	SELECT * FROM (SELECT MEMBER_CASUAL, DAY_OF_WEEK, AVG (CAST (ENDED_AT AS DATE)-CAST (STARTED_AT AS DATE))*24*60*60 AS RIDECOUNT FROM ZANALYSISR group by member_casual, DAY_OF_WEEK ORDER BY member_casual, DAY_OF_WEEK)
+PIVOT (SUM(RIDECOUNT)
+FOR (MEMBER_CASUAL)
+IN ('member' member,'casual' casual)) 
+ORDER BY DAY_OF_WEEK
+--Calculate the average ride_length for members and casual riders, in each month of ride_length.
+	SELECT * FROM (SELECT MEMBER_CASUAL, MONTH, YEAR, AVG(CAST(ENDED_AT AS DATE)-CAST(STARTED_AT AS DATE))*24*60*60 AS RIDECOUNT FROM ZANALYSISR group by member_casual,MONTH,YEAR ORDER BY member_casual,MONTH,YEAR)
+PIVOT (SUM(RIDECOUNT)
+FOR (MEMBER_CASUAL)
+IN('member' member,'casual' casual)) 
+ORDER BY MONTH,YEAR
+--Calculate the number of rides for by member types by day_of_week by adding Count of trip_id to Values.
+	SELECT * FROM(SELECT COUNT(RIDE_ID) AS RIDECOUNT,MEMBER_CASUAL, DAY_OF_WEEK FROM  ZANALYSISR GROUP BY MEMBER_CASUAL, DAY_OF_WEEK ORDER BY MEMBER_CASUAL, DAY_OF_WEEK)
+PIVOT (SUM(RIDECOUNT)
+FOR (MEMBER_CASUAL)
+IN('member' member,'casual' casual)) 
+ORDER BY DAY_OF_WEEK
+--Count number of rides by member types and month and year
+SELECT * FROM(SELECT COUNT(RIDE_ID) AS RIDECOUNT,MONTH,YEAR, member_casual FROM  ZANALYSISR GROUP BY MONTH,YEAR,member_casual ORDER BY MONTH,YEAR,member_casual)
+PIVOT (SUM(RIDECOUNT)
+FOR (MEMBER_CASUAL)
+IN('member' member,'casual' casual)) 
+ORDER BY MONTH,YEAR
+Count Rides by member types, ride types month, Year	SELECT COUNT(RIDE_ID),RIDEABLE_TYPE ,member_casual,MONTH,YEAR FROM  ZANALYSISR GROUP BY RIDEABLE_TYPE,member_casual,MONTH,YEAR ORDER BY RIDEABLE_TYPE,member_casual,MONTH,YEAR
