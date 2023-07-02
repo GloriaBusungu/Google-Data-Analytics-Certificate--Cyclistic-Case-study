@@ -1,0 +1,2 @@
+# Google-Data-Analytics-Certificate--Cyclistic-Case-study
+As the requirement for completion of the Google Data Analytics Certificate As a junior data analyst I will analyse data of the fictional company “Cyclistic” provided by the Course. To answer a business task; Cyclistic’s historical trip data is used to analyse and identify trends of the previous twelve (12) Months from April 2022 to March 2023.
